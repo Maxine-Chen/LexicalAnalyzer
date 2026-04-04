@@ -77,7 +77,7 @@ public class MainFrame extends JFrame {
     private void initMainLayout() {
         // --- 1. 左侧：源码编辑区 ---
         sourceEditor = new JTextArea();
-        sourceEditor.setFont(new Font("Consolas", Font.PLAIN, 15));
+        sourceEditor.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 15));
         sourceEditor.setTabSize(4);
         JScrollPane leftScroll = new JScrollPane(sourceEditor);
         leftScroll.setBorder(BorderFactory.createTitledBorder("源程序输入区"));
@@ -116,9 +116,6 @@ public class MainFrame extends JFrame {
     public JMenuItem getSaveFileMenu() { return saveFileMenu; }
     public JButton getRunBtn() { return runBtn; }
     public JButton getClearBtn() { return clearBtn; }
-
-
-
 
 
     // 1. 在 MainFrame 类中添加成员变量
