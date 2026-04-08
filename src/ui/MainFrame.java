@@ -2,15 +2,15 @@ package ui;
 
 import javax.swing.*;
 import java.awt.*;
+
+import core.Lexer;
+import core.Token;
 import service.FileService;
 
 
-/**
- * 主窗口类：负责界面布局和组件初始化
- */
+
 public class MainFrame extends JFrame {
 
-    // 核心组件，设为成员变量方便后续 service 和 core 调用
     private JTextArea sourceEditor;    // 左侧源码编辑区
     private JTextArea tokenTableArea;  // 右上Token序列区
     private JTextArea errorLogArea;    // 右下错误日志区
@@ -34,9 +34,7 @@ public class MainFrame extends JFrame {
         initListeners();
     }
 
-    /**
-     * 初始化菜单栏
-     */
+
     private void initMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
@@ -54,9 +52,7 @@ public class MainFrame extends JFrame {
         this.setJMenuBar(menuBar);
     }
 
-    /**
-     * 初始化工具栏
-     */
+
     private void initToolBar() {
         JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false); // 固定工具栏
@@ -71,18 +67,15 @@ public class MainFrame extends JFrame {
         this.add(toolBar, BorderLayout.NORTH);
     }
 
-    /**
-     * 初始化主体布局（使用 JSplitPane 进行分割）
-     */
     private void initMainLayout() {
-        // --- 1. 左侧：源码编辑区 ---
+        // 源码编辑区
         sourceEditor = new JTextArea();
-        sourceEditor.setFont(new Font("Consolas", Font.PLAIN, 15));
+        sourceEditor.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 15));
         sourceEditor.setTabSize(4);
         JScrollPane leftScroll = new JScrollPane(sourceEditor);
         leftScroll.setBorder(BorderFactory.createTitledBorder("源程序输入区"));
 
-        // --- 2. 右侧：Token表和错误区 (上下分割) ---
+        // Token表和错误区
         tokenTableArea = new JTextArea();
         tokenTableArea.setEditable(false);
         tokenTableArea.setBackground(new Color(245, 245, 245));
@@ -100,24 +93,12 @@ public class MainFrame extends JFrame {
         JSplitPane rightSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tokenScroll, errorScroll);
         rightSplit.setDividerLocation(400); // 初始高度
 
-        // --- 3. 总体左右分割 ---
+        // 总体左右分割
         JSplitPane mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftScroll, rightSplit);
         mainSplit.setDividerLocation(450); // 初始宽度
 
         this.add(mainSplit, BorderLayout.CENTER);
     }
-
-    // --- Getter 方法，方便 service 层获取或修改文本内容 ---
-
-    public JTextArea getSourceEditor() { return sourceEditor; }
-    public JTextArea getTokenTableArea() { return tokenTableArea; }
-    public JTextArea getErrorLogArea() { return errorLogArea; }
-    public JMenuItem getOpenFileMenu() { return openFileMenu; }
-    public JMenuItem getSaveFileMenu() { return saveFileMenu; }
-    public JButton getRunBtn() { return runBtn; }
-    public JButton getClearBtn() { return clearBtn; }
-
-
 
 
 
@@ -158,7 +139,21 @@ public class MainFrame extends JFrame {
                 errorLogArea.setText("错误：请输入源代码再进行分析！");
                 return;
             }
-            System.out.println("开始分析逻辑...");
+            // 1. 从界面获取源码
+            String inputCode = sourceEditor.getText();
+            // 2. 实例化并运行 Lexer
+            Lexer lexer = new Lexer(inputCode);
+            lexer.analyze();
+            // 3. 将 Token 序列显示到右上角窗口
+            StringBuilder tokenOutput = new StringBuilder();
+            tokenOutput.append("行号:\t单词文本\t\t类别码\n");
+            tokenOutput.append("------------------------------------------\n");
+            for (Token t : lexer.getTokens()) {
+                tokenOutput.append(t.toString()).append("\n");
+            }
+            tokenTableArea.setText(tokenOutput.toString());
+            // 4. 将错误信息显示到右下角窗口
+            errorLogArea.setText(lexer.getErrorLog());
         });
     }
 

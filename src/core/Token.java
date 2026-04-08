@@ -1,20 +1,25 @@
 package core;
 
+
+//Token 类：用于存储词法分析出来的每一个单词单元的信息
 public class Token {
     private int line;       // 行号
-    private String word;    // 单词文本内容
-    private int typeCode;   // 类别码（对应TokenType里的数字）
+    private String lexeme;  // 单词文本（源码中的原始字符串）
+    private int typeCode;   // 类别码（来自 TokenConstants）
 
-    public Token(int line, String word, int typeCode) {
+    public Token(int line, String lexeme, int typeCode) {
         this.line = line;
-        this.word = word;
+        this.lexeme = lexeme;
         this.typeCode = typeCode;
     }
 
-    // 为了方便在 UI 的 JTextArea 中显示，重写 toString
+    public int getLine() { return line; }
+    public String getLexeme() { return lexeme; }
+    public int getTypeCode() { return typeCode; }
+
+
     @Override
     public String toString() {
-        // 格式参考截图：行号:  单词  类别码
-        return String.format("%d:\t%-15s\t%d", line, word, typeCode);
+        return String.format("%-4d:\t%-15s\t%d", line, lexeme, typeCode);
     }
 }
