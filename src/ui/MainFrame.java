@@ -19,6 +19,7 @@ public class MainFrame extends JFrame {
     private JMenuItem saveFileMenu;    // 菜单：保存
     private JButton runBtn;            // 工具栏：分析按钮
     private JButton clearBtn;          // 工具栏：清空按钮
+    private JButton automataBtn;       // 工具栏：NFA_DFA_MFA 转换按钮
 
     public MainFrame() {
         // 设置窗口基本属性
@@ -57,10 +58,13 @@ public class MainFrame extends JFrame {
         JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false); // 固定工具栏
 
-        runBtn = new JButton("开始分析");
+        runBtn = new JButton("词法分析");
+        automataBtn = new JButton("NFA_DFA_MFA转换");
         clearBtn = new JButton("清空内容");
 
+
         toolBar.add(runBtn);
+        toolBar.add(automataBtn); // 并排添加
         toolBar.addSeparator();
         toolBar.add(clearBtn);
 
@@ -154,6 +158,11 @@ public class MainFrame extends JFrame {
             tokenTableArea.setText(tokenOutput.toString());
             // 4. 将错误信息显示到右下角窗口
             errorLogArea.setText(lexer.getErrorLog());
+        });
+
+        automataBtn.addActionListener(e -> {
+            AutomataFrame automataFrame = new AutomataFrame();
+            automataFrame.setVisible(true);
         });
     }
 
