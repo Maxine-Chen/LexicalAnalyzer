@@ -17,9 +17,11 @@ public class MainFrame extends JFrame {
 
     private JMenuItem openFileMenu;    // 菜单：打开
     private JMenuItem saveFileMenu;    // 菜单：保存
+    private JMenuItem clearMenuItem;     // 菜单：清空内容
+
     private JButton runBtn;            // 工具栏：分析按钮
-    private JButton clearBtn;          // 工具栏：清空按钮
     private JButton automataBtn;       // 工具栏：NFA_DFA_MFA 转换按钮
+    private JButton ll1Btn ;           // 工具栏：LL(1)预测分析按钮
 
     public MainFrame() {
         // 设置窗口基本属性
@@ -44,12 +46,19 @@ public class MainFrame extends JFrame {
         openFileMenu = new JMenuItem("打开文件");
         saveFileMenu = new JMenuItem("保存文件");
         JMenuItem exitMenu = new JMenuItem("退出");
+
         fileMenu.add(openFileMenu);
         fileMenu.add(saveFileMenu);
-        fileMenu.addSeparator();
+        fileMenu.addSeparator();// 添加分隔线
         fileMenu.add(exitMenu);
 
+        JMenu editMenu = new JMenu("操作");
+        clearMenuItem = new JMenuItem("清空内容");
+        editMenu.add(clearMenuItem);
+
         menuBar.add(fileMenu);
+        menuBar.add(editMenu);
+
         this.setJMenuBar(menuBar);
     }
 
@@ -60,13 +69,12 @@ public class MainFrame extends JFrame {
 
         runBtn = new JButton("词法分析");
         automataBtn = new JButton("NFA_DFA_MFA转换");
-        clearBtn = new JButton("清空内容");
+        ll1Btn = new JButton("LL(1)预测分析");
 
 
         toolBar.add(runBtn);
-        toolBar.add(automataBtn); // 并排添加
-        toolBar.addSeparator();
-        toolBar.add(clearBtn);
+        toolBar.add(automataBtn);
+        toolBar.add(ll1Btn);
 
         this.add(toolBar, BorderLayout.NORTH);
     }
@@ -130,7 +138,7 @@ public class MainFrame extends JFrame {
         });
 
         // --- “清空内容”监听 ---
-        clearBtn.addActionListener(e -> {
+        clearMenuItem.addActionListener(e -> {
             sourceEditor.setText("");
             tokenTableArea.setText("");
             errorLogArea.setText("");
@@ -160,9 +168,16 @@ public class MainFrame extends JFrame {
             errorLogArea.setText(lexer.getErrorLog());
         });
 
+        // 绑定自动机转换窗口跳转
         automataBtn.addActionListener(e -> {
             AutomataFrame automataFrame = new AutomataFrame();
             automataFrame.setVisible(true);
+        });
+
+        // 绑定LL1预测分析窗口跳转
+        ll1Btn.addActionListener(e -> {
+            LL1Frame ll1Frame = new LL1Frame();
+            ll1Frame.setVisible(true);
         });
     }
 
